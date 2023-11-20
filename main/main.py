@@ -38,7 +38,7 @@ class holding_register(Resource):
         if not client.open():
             abort("Unable to Connect to PLC")
         else:
-            client.write_single_register(1000+ args["register_ID"], args["register_Data"]) 
+            client.write_single_register(args["register_ID"], args["register_Data"]) 
         return "Succesfully updated"
 
             

@@ -28,7 +28,7 @@ class holding_register(Resource):
         if not client.open():
             abort("Unable to Connect to PLC")
         else:
-            registers[args["register_ID"] ] = client.read_holding_registers(1000 + args["register_ID"], 1)  
+            registers[args["register_ID"] ] = client.read_holding_registers(args["register_ID"], 1)  
             print(f"Register Nr{args['register_ID']} = {registers[args['register_ID']]}")
       
         return registers[args["register_ID"]]

@@ -6,7 +6,7 @@ from flask_restful import Api, Resource, reqparse, abort
 
 app = Flask(__name__)
 api = Api(app)
-client = ModbusClient(host="192.168.0.15", port=502, debug=True)
+client = ModbusClient(host="192.168.1.4", port=502, debug=True)
 
 #adress = 1001 
 #number = 1

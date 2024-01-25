@@ -6,7 +6,7 @@ from flask_restful import Api, Resource, reqparse, abort
 
 app = Flask(__name__)
 api = Api(app)
-client = ModbusClient(host="192.168.1.4", port=502, debug=True)
+client = ModbusClient(host="192.168.1.2", port=502, debug=True)
 
 #adress = 1001 
 #number = 1
@@ -35,35 +35,29 @@ class holding_register(Resource):
       
         return registers[args["register_ID"]]
     
+    
     def put(self):
         args = register_put_args.parse_args()  #parsing PUT Arguments to PUT Request
         if not client.open(): #Checking if the PLC is connected
             abort("Unable to Connect to PLC")
         else:   
-            
+
             #Start Cleaning Cycle Function condition check
-            if args["register_ID"] == 33:  #IF the Register ID of the PUT request is 33
-                if client.read_holding_registers(1,1) != 1: #Checks MarkerWord 1. If MW1 != 1 means System not in Startposition.
-                    abort("Cannot Start Cleaning Cycle: System not in Startposition") #Aborts with error message
+            if args["register_ID"] == 1003:  #IF the Register ID of the PUT request is 33
+                registers[1] = client.read_holding_registers(1001,1)
+                if registers[1][0] != 1: #Checks MarkerWord 1. If MW1 != 1 means System not in Startpositi>
+                    return"Cannot Start Cleaning Cycle: System not in Startposition" #Aborts with error>
+                    
 
             #Nozzle Cleaning Function condition check
-            if args["register_ID"] == 65: # IF the Register ID of the PUT request is 65
-                if client.read_holding_registers(1,1) != 1: #Checks MarkerWord 1. If MW1 != 1 means System not in Startposition.
-                    abort("Cannot clean nozzle: System not in Startposition") #Aborts with error message
+            if args["register_ID"] == 1005: # IF the Register ID of the PUT request is 65
+                registers[1] = client.read_holding_registers(1001,1)
+                if registers[1][0] != 1: #Checks MarkerWord 1. If MW1 != 1 means System not in Startpositi>
+                    return "Cannot clean nozzle: System not in Startposition" #Aborts with error message
 
-
-            client.write_single_register(args["register_ID"], args["register_Data"]) # If the System is in adequate Programm State for the Register_ID (corresponding to a Programm function) provided the Data is written to the Register ID specified. This will be 1 for most cases
+            client.write_single_register(args["register_ID"], args["register_Data"]) # If the System is >
 
         return "Succesfully updated"
-
-            
-
-
-
-        
-
-
-   
 
 api.add_resource(holding_register,"/register")
           
